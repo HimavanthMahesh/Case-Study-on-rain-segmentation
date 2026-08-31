@@ -24,6 +24,7 @@ class RepositoryValidationTests(unittest.TestCase):
 
     def test_python_scripts_compile(self):
         scripts = sorted((ROOT / "scripts").glob("*.py"))
+        scripts.extend(sorted((ROOT / "reliability_monitor").rglob("*.py")))
         self.assertGreater(len(scripts), 0)
 
         for script_path in scripts:

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Monitor semantic-segmentation consistency across adverse-weather conditions.">
+    <title>Vision Reliability Monitor</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Rain-robust semantic segmentation</p>
+        <h1>Vision Reliability Monitor</h1>
+        <p class="lede">Track prediction consistency, compare restoration treatments, and surface adverse-weather regressions.</p>
+      </header>
+
+      <section class="metric-grid" aria-label="Monitor summary">
+        <article><span>Recorded runs</span><strong id="run-count">—</strong></article>
+        <article><span>Best overall treatment</span><strong id="best-treatment">—</strong></article>
+        <article><span>Active alerts</span><strong id="alert-count">—</strong></article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Condition matrix</p>
+            <h2>Mean consistency by rain severity</h2>
+          </div>
+          <p class="scope" id="metric-scope"></p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Treatment</th><th>Light</th><th>Medium</th><th>Heavy</th><th>Overall</th></tr></thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Automated checks</p>
+            <h2>Reliability alerts</h2>
+          </div>
+          <p class="scope">Defaults: mean below 0.70 or light-to-heavy drop above 0.12.</p>
+        </div>
+        <div id="alerts" class="alerts" aria-live="polite"></div>
+      </section>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

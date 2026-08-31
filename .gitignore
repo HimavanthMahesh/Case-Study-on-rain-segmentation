@@ -12,6 +12,8 @@ models/
 weights/
 checkpoints/
 outputs/
+data/monitor/
+*.db
 *.pt
 *.pth
 *.ckpt

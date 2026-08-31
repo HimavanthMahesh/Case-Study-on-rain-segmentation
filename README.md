@@ -4,6 +4,8 @@ An independent study of how synthetic rain and image deraining affect semantic s
 
 The project applies multiple rain conditions to a Cityscapes subset, restores the degraded images with five deraining models, and evaluates the resulting images with four semantic-segmentation systems. The repository contains the experimental notebooks, reusable inference scripts, summary measurements, and representative figures. Large datasets, model weights, caches, and exhaustive generated outputs are intentionally excluded.
 
+It also includes a lightweight [Vision Reliability Monitor](docs/RELIABILITY_MONITOR.md) that converts the recorded evaluation results into a SQLite-backed API, regression-alerting service, and browser dashboard.
+
 ## Portfolio highlights
 
 This project demonstrates an end-to-end computer-vision research workflow: synthetic adverse-weather generation, multi-model image restoration, semantic-segmentation inference, experiment aggregation, and cautious interpretation of downstream robustness. The study evaluates five derainers and four segmentors across three rain severities and three rain realizations per severity.
@@ -64,6 +66,7 @@ A fuller interpretation, including what the metric does and does not establish, 
 .
 ├── notebooks/                 # Cleaned experimental notebooks, in workflow order
 ├── scripts/                   # Reusable semantic-segmentation inference utilities
+├── reliability_monitor/       # Evaluation store, API, alerts, and dashboard
 ├── results/
 │   ├── examples/              # Small qualitative sample
 │   ├── figures/               # Analysis plots
@@ -132,6 +135,14 @@ To regenerate the compact MSeg table from the recorded per-variant summary:
 ```bash
 python scripts/summarize_mseg_results.py
 ```
+
+To launch the reliability dashboard with the recorded results:
+
+```bash
+python -m reliability_monitor --database data/monitor/reliability.db serve --seed
+```
+
+Then visit `http://127.0.0.1:8081`. The monitor uses only Python's standard library and does not download models or require a GPU.
 
 ## Data and scope
 
