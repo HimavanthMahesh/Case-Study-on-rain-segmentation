@@ -133,6 +133,12 @@ python -m unittest discover -s tests -v
 
 The same checks run automatically on pushes and pull requests through GitHub Actions.
 
+To regenerate the compact MSeg table from the recorded per-variant summary:
+
+```bash
+python scripts/summarize_mseg_results.py
+```
+
 ## Data and scope
 
 Cityscapes data is not redistributed here. Obtain it under the terms provided by the [Cityscapes dataset](https://www.cityscapes-dataset.com/). Model weights are also excluded and must be obtained from their original providers.

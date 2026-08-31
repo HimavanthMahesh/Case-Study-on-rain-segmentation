@@ -3,6 +3,8 @@ import py_compile
 import unittest
 from pathlib import Path
 
+from scripts.summarize_mseg_results import aggregate_means, load_variant_means
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,6 +38,13 @@ class RepositoryValidationTests(unittest.TestCase):
             if path.is_file() and ".git" not in path.parts and path.stat().st_size >= limit
         ]
         self.assertEqual(oversized, [])
+
+    def test_recorded_mseg_summary_reproduces_headline_values(self):
+        csv_path = ROOT / "results" / "tables" / "mseg_rain_instance_miou_summary.csv"
+        summary = aggregate_means(load_variant_means(csv_path))
+
+        self.assertAlmostEqual(summary["idt"]["overall"], 0.764, places=3)
+        self.assertAlmostEqual(summary["nerdrain"]["heavy"], 0.724, places=3)
 
 
 if __name__ == "__main__":
