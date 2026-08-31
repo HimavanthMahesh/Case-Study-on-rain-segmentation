@@ -1,0 +1,12 @@
+numpy
+pandas
+Pillow
+matplotlib
+seaborn
+tqdm
+torch
+torchvision
+transformers
+accelerate
+opencv-python
+jupyter
