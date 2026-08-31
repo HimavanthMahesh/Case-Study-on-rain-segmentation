@@ -10,7 +10,7 @@ This project demonstrates an end-to-end computer-vision research workflow: synth
 
 ## Research question
 
-Can a learned deraining model recover semantic-segmentation performance lost under synthetic rain, and how does that effect change with rain severity, rain realization, derainer, and segmentor?
+Can a learned deraining model recover semantic-segmentation consistency lost under synthetic rain, and how does that effect change with rain severity, rain realization, derainer, and segmentor?
 
 ## Experimental design
 
@@ -19,7 +19,7 @@ Can a learned deraining model recover semantic-segmentation performance lost und
 - Rain variants: three realizations per severity
 - Derainers: DRSformer, IDT, NeRD-Rain, Restormer, and UDR-S2Former
 - Segmentors: MSeg, SegFormer, Mask2Former, and OneFormer
-- Primary metric: mean intersection over union (mIoU)
+- Primary metric: mean intersection over union (mIoU) against clean-image predictions
 - Secondary analyses: image-level distributions, overlays, and comparisons with clean-image predictions
 
 The pipeline is:
@@ -55,7 +55,11 @@ The available MSeg summary contains 50 image-level evaluations for every deraine
 | Restormer | 0.758 | 0.718 | 0.673 | 0.716 |
 | UDR-S2Former | 0.798 | 0.742 | 0.689 | 0.743 |
 
-These measurements show that performance generally declines as rain becomes heavier. IDT has the highest overall mean in this MSeg subset, while NeRD-Rain has the strongest mean under medium and heavy rain. These values compare the restored images within the recorded experiment; they should not be interpreted as general benchmark rankings.
+These measurements show that agreement with clean-image predictions generally declines as rain becomes heavier. IDT has the highest overall mean in this MSeg subset, while NeRD-Rain has the strongest mean under medium and heavy rain. These values compare the restored images within the recorded experiment; they should not be interpreted as general benchmark rankings.
+
+### Metric scope
+
+The recorded final comparison uses each segmentor's clean-image prediction as the reference. It therefore measures prediction consistency under rain and deraining, not absolute semantic-segmentation accuracy against Cityscapes ground-truth labels. A lower score means that a model's prediction changed more from its clean-image behavior; it does not by itself prove that the changed prediction is less accurate.
 
 ![MSeg mIoU distributions across derainers](results/figures/mseg_rain_instance_boxplots/mseg_all_derainers_rain_instance_miou_grid.png)
 
