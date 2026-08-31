@@ -4,6 +4,10 @@ An independent study of how synthetic rain and image deraining affect semantic s
 
 The project applies multiple rain conditions to a Cityscapes subset, restores the degraded images with five deraining models, and evaluates the resulting images with four semantic-segmentation systems. The repository contains the experimental notebooks, reusable inference scripts, summary measurements, and representative figures. Large datasets, model weights, caches, and exhaustive generated outputs are intentionally excluded.
 
+## Portfolio highlights
+
+This project demonstrates an end-to-end computer-vision research workflow: synthetic adverse-weather generation, multi-model image restoration, semantic-segmentation inference, experiment aggregation, and cautious interpretation of downstream robustness. The study evaluates five derainers and four segmentors across three rain severities and three rain realizations per severity.
+
 ## Research question
 
 Can a learned deraining model recover semantic-segmentation performance lost under synthetic rain, and how does that effect change with rain severity, rain realization, derainer, and segmentor?
@@ -72,6 +76,8 @@ Additional per-derainer and cross-segmentor figures are available in [`results/f
 │   ├── REPRODUCIBILITY.md     # Setup, data, and execution notes
 │   └── THIRD_PARTY.md         # External model and tool attribution
 ├── requirements.txt
+├── CITATION.cff
+├── tests/                     # Lightweight repository integrity checks
 └── LICENSE
 ```
 
@@ -112,6 +118,16 @@ python scripts/run_cityscapes_segmentor.py \
 ```
 
 Valid model types are `segformer`, `mask2former`, and `oneformer`. The script selects CUDA when available and otherwise uses the CPU.
+
+## Repository validation
+
+The lightweight validation suite checks that notebooks remain valid JSON without saved execution output, Python scripts compile, and no tracked file exceeds GitHub's standard file-size limit.
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The same checks run automatically on pushes and pull requests through GitHub Actions.
 
 ## Data and scope
 

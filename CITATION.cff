@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this research record, please cite it using this metadata."
+title: "Rain-Robust Semantic Segmentation"
+type: software
+authors:
+  - family-names: Mahesh
+    given-names: Himavanth
+year: 2026
+repository-code: "https://github.com/HimavanthMahesh/Case-Study-on-rain-segmentation"
+license: MIT
+keywords:
+  - semantic segmentation
+  - image deraining
+  - adverse weather
+  - computer vision
+  - autonomous driving
