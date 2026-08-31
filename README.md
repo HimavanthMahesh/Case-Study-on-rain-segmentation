@@ -22,25 +22,16 @@ Can a learned deraining model recover semantic-segmentation consistency lost und
 - Primary metric: mean intersection over union (mIoU) against clean-image predictions
 - Secondary analyses: image-level distributions, overlays, and comparisons with clean-image predictions
 
-The pipeline is:
-
-```text
-Cityscapes images
-      |
-      v
-synthetic rain (3 severities x 3 variants)
-      |
-      +--------------------+
-      |                    |
-      v                    v
-direct segmentation    image deraining (5 models)
-      |                    |
-      +----------+---------+
-                 v
-      semantic segmentation (4 models)
-                 |
-                 v
-       mIoU and qualitative analysis
+```mermaid
+flowchart LR
+    A[Cityscapes images] --> B[Clean-image predictions]
+    A --> C[Synthetic rain<br/>3 severities x 3 variants]
+    C --> D[Direct segmentation]
+    C --> E[Image deraining<br/>5 models]
+    E --> F[Semantic segmentation<br/>4 models]
+    D --> G[mIoU and qualitative analysis]
+    F --> G
+    B --> G
 ```
 
 ## Selected results
