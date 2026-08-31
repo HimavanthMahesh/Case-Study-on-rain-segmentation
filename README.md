@@ -56,6 +56,8 @@ The recorded final comparison uses each segmentor's clean-image prediction as th
 
 Additional per-derainer and cross-segmentor figures are available in [`results/figures`](results/figures). The underlying MSeg summary is in [`results/tables/mseg_rain_instance_miou_summary.csv`](results/tables/mseg_rain_instance_miou_summary.csv).
 
+A fuller interpretation, including what the metric does and does not establish, is available in [`docs/RESULTS.md`](docs/RESULTS.md).
+
 ## Repository structure
 
 ```text
@@ -68,6 +70,7 @@ Additional per-derainer and cross-segmentor figures are available in [`results/f
 │   └── tables/                # Summary data and run manifest
 ├── docs/
 │   ├── METHODOLOGY.md         # Detailed experiment design
+│   ├── RESULTS.md             # Findings, metric scope, and follow-up experiments
 │   ├── REPRODUCIBILITY.md     # Setup, data, and execution notes
 │   └── THIRD_PARTY.md         # External model and tool attribution
 ├── requirements.txt
