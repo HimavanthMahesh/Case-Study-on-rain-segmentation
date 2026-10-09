@@ -45,18 +45,20 @@ The reusable inference script supports the three Hugging Face models. MSeg follo
 
 ## Evaluation
 
-The primary recorded metric is mIoU. For each derainer-severity-variant combination in the supplied MSeg summary:
+The supplied MSeg CSV records **rain-instance agreement**: pairwise mask mIoU across the three independently rendered rain variants for the same source frame, derainer, and severity. For each variant, the score is the mean of its two pairwise agreements with the other variants. For each derainer-severity-variant combination:
 
 - `n = 50` image-level measurements
 - mean, median, standard deviation, minimum, and maximum are reported
 - distributions are visualized with boxplots
 
-Additional figures compare each of the four segmentors against clean-image behavior for each derainer. The repository contains those figures, but the archive did not include the complete underlying aggregate tables for all four segmentors. Accordingly, numerical claims in the main README are limited to the supplied MSeg summary table.
+Additional figures compare each of the four segmentors against clean-image behavior for each derainer. Those figures use a **different metric**, clean-reference agreement. The repository contains those figures, but the archive did not include a machine-readable aggregate table for all four segmentors. Accordingly, numerical claims in the main README are limited to the supplied MSeg rain-instance table. See [metric definitions and provenance](METRICS.md).
+
+The `segmentation_outputs_manifest.csv` was generated before the MSeg outputs were normalized into the later analysis locations. It reports zero masks for MSeg under its earlier expected paths, while the separate MSeg analysis CSV and sample masks show that MSeg predictions were subsequently analyzed. Do not interpret the manifest's MSeg zeroes as a final result or silently change them without regenerating the manifest from the definitive paths.
 
 ## Interpretation limits
 
 - The sample contains 50 images from one Cityscapes sequence and is not a full-dataset benchmark.
 - Results depend on the selected pretrained weights and preprocessing implementations.
 - Synthetic rain does not cover all real-world weather effects.
-- mIoU values in the supplied table characterize the recorded pipeline and should not be treated as universal model rankings.
+- mIoU values in the supplied table measure agreement across synthetic rain realizations, not accuracy or agreement with clean predictions; they should not be treated as universal model rankings.
 - Full reproducibility requires upstream code versions, model weights, and source data that are not redistributed here.

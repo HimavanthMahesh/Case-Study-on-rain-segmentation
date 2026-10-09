@@ -2,6 +2,8 @@
 
 An independent study of how synthetic rain and image deraining affect semantic segmentation in urban driving scenes.
 
+Conducted at the University of Illinois Urbana-Champaign under Professor David A. Forsyth through Spring 2026. This identifies the study supervisor, not an endorsement of this repository or its conclusions.
+
 The project applies multiple rain conditions to a Cityscapes subset, restores the degraded images with five deraining models, and evaluates the resulting images with four semantic-segmentation systems. The repository contains the experimental notebooks, reusable inference scripts, summary measurements, and representative figures. Large datasets, model weights, caches, and exhaustive generated outputs are intentionally excluded.
 
 It also includes a lightweight [Vision Reliability Monitor](docs/RELIABILITY_MONITOR.md) that converts the recorded evaluation results into a SQLite-backed API, regression-alerting service, and browser dashboard.
@@ -21,8 +23,9 @@ Can a learned deraining model recover semantic-segmentation consistency lost und
 - Rain variants: three realizations per severity
 - Derainers: DRSformer, IDT, NeRD-Rain, Restormer, and UDR-S2Former
 - Segmentors: MSeg, SegFormer, Mask2Former, and OneFormer
-- Primary metric: mean intersection over union (mIoU) against clean-image predictions
-- Secondary analyses: image-level distributions, overlays, and comparisons with clean-image predictions
+- Recorded table metric: rain-instance agreement, measured as pairwise mIoU between segmentation predictions for three rain realizations of the same source image and condition
+- Separate figure metric: mIoU between each derained-image prediction and the corresponding clean-image prediction
+- Neither metric is segmentation accuracy against Cityscapes ground-truth labels
 
 ```mermaid
 flowchart LR
@@ -36,9 +39,9 @@ flowchart LR
     B --> G
 ```
 
-## Selected results
+## Selected results: agreement across rain realizations
 
-The available MSeg summary contains 50 image-level evaluations for every derainer, severity, and rain variant. Averaging the three variants gives:
+The available MSeg CSV contains 50 image-level evaluations for every derainer, severity, and rain variant. For each source image, a variant's score averages its pairwise mask mIoU with the other two rain variants under the same derainer and severity. Averaging the three variants gives:
 
 | Derainer | Light | Medium | Heavy | Overall |
 |---|---:|---:|---:|---:|
@@ -48,15 +51,15 @@ The available MSeg summary contains 50 image-level evaluations for every deraine
 | Restormer | 0.758 | 0.718 | 0.673 | 0.716 |
 | UDR-S2Former | 0.798 | 0.742 | 0.689 | 0.743 |
 
-These measurements show that agreement with clean-image predictions generally declines as rain becomes heavier. IDT has the highest overall mean in this MSeg subset, while NeRD-Rain has the strongest mean under medium and heavy rain. These values compare the restored images within the recorded experiment; they should not be interpreted as general benchmark rankings.
+These measurements show that **agreement across rain realizations** generally declines as rain becomes heavier. IDT has the highest overall mean in this MSeg subset, while NeRD-Rain has the strongest mean under medium and heavy rain. These values measure cross-realization stability, not restoration quality, clean-image agreement, or segmentation accuracy. They should not be interpreted as general benchmark rankings.
 
 ### Metric scope
 
-The recorded final comparison uses each segmentor's clean-image prediction as the reference. It therefore measures prediction consistency under rain and deraining, not absolute semantic-segmentation accuracy against Cityscapes ground-truth labels. A lower score means that a model's prediction changed more from its clean-image behavior; it does not by itself prove that the changed prediction is less accurate.
+The table above and the MSeg rain-instance boxplots compare predictions **between rain realizations**. The separate four-segmentor figures compare derained-image predictions with each segmentor's clean-image prediction. Both are prediction-consistency analyses, but they answer different questions and must not be combined or relabeled. Neither uses Cityscapes ground-truth masks. The recorded artifacts also do not establish whether deraining improves segmentation compared with directly segmenting the unprocessed rainy image.
 
-![MSeg mIoU distributions across derainers](results/figures/mseg_rain_instance_boxplots/mseg_all_derainers_rain_instance_miou_grid.png)
+![MSeg rain-instance agreement distributions across derainers](results/figures/mseg_rain_instance_boxplots/mseg_all_derainers_rain_instance_miou_grid.png)
 
-Additional per-derainer and cross-segmentor figures are available in [`results/figures`](results/figures). The underlying MSeg summary is in [`results/tables/mseg_rain_instance_miou_summary.csv`](results/tables/mseg_rain_instance_miou_summary.csv).
+Additional rain-instance and clean-reference figures are available in [`results/figures`](results/figures). The underlying rain-instance MSeg summary is in [`results/tables/mseg_rain_instance_miou_summary.csv`](results/tables/mseg_rain_instance_miou_summary.csv). See the [metric definitions and artifact provenance](docs/METRICS.md) before quoting a number.
 
 A fuller interpretation, including what the metric does and does not establish, is available in [`docs/RESULTS.md`](docs/RESULTS.md).
 
@@ -74,6 +77,7 @@ A fuller interpretation, including what the metric does and does not establish, 
 ├── docs/
 │   ├── METHODOLOGY.md         # Detailed experiment design
 │   ├── RESULTS.md             # Findings, metric scope, and follow-up experiments
+│   ├── METRICS.md             # Metric definitions and artifact provenance
 │   ├── REPRODUCIBILITY.md     # Setup, data, and execution notes
 │   └── THIRD_PARTY.md         # External model and tool attribution
 ├── requirements.txt

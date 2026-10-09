@@ -1,4 +1,4 @@
-"""Create a compact Markdown summary from the recorded MSeg result table."""
+"""Summarize recorded MSeg rain-instance agreement, not clean-reference accuracy."""
 
 import argparse
 import csv
@@ -66,6 +66,7 @@ def parse_args():
 def main():
     args = parse_args()
     grouped = load_variant_means(args.csv_path)
+    print("MSeg pairwise mask mIoU across synthetic rain realizations")
     print(render_markdown(aggregate_means(grouped)))
 
 

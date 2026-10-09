@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Monitor semantic-segmentation consistency across adverse-weather conditions.">
+    <meta name="description" content="Explore rain-instance agreement in a recorded semantic-segmentation study.">
     <title>Vision Reliability Monitor</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
@@ -12,20 +12,20 @@
       <header>
         <p class="eyebrow">Rain-robust semantic segmentation</p>
         <h1>Vision Reliability Monitor</h1>
-        <p class="lede">Track prediction consistency, compare restoration treatments, and surface adverse-weather regressions.</p>
+        <p class="lede">Explore how stable segmentation predictions were across three synthetic rain realizations in the recorded study. This is not a ground-truth accuracy dashboard.</p>
       </header>
 
       <section class="metric-grid" aria-label="Monitor summary">
         <article><span>Recorded runs</span><strong id="run-count">—</strong></article>
-        <article><span>Best overall treatment</span><strong id="best-treatment">—</strong></article>
-        <article><span>Active alerts</span><strong id="alert-count">—</strong></article>
+        <article><span>Highest rain-instance agreement</span><strong id="best-treatment">—</strong></article>
+        <article><span>Threshold flags</span><strong id="alert-count">—</strong></article>
       </section>
 
       <section class="panel">
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Condition matrix</p>
-            <h2>Mean consistency by rain severity</h2>
+            <h2>Rain-instance agreement by severity</h2>
           </div>
           <p class="scope" id="metric-scope"></p>
         </div>
@@ -41,7 +41,7 @@
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Automated checks</p>
-            <h2>Reliability alerts</h2>
+            <h2>Descriptive threshold checks</h2>
           </div>
           <p class="scope">Defaults: mean below 0.70 or light-to-heavy drop above 0.12.</p>
         </div>

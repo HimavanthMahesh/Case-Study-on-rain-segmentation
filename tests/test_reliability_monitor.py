@@ -38,6 +38,9 @@ class ReliabilityMonitorTests(unittest.TestCase):
         self.assertEqual(overview["run_count"], 45)
         self.assertEqual(len(overview["groups"]), 15)
         self.assertEqual(overview["treatments"][0]["treatment"], "idt")
+        self.assertEqual(overview["metric_type"], "rain_instance_agreement")
+        self.assertIn("rain realizations", overview["metric"])
+        self.assertNotIn("against clean-image predictions", overview["metric"])
 
     def test_flags_low_consistency_and_severity_degradation(self):
         self.seed()
@@ -73,6 +76,41 @@ class ReliabilityMonitorTests(unittest.TestCase):
         }
         with self.assertRaises(ValidationError):
             insert_run(self.database, invalid)
+
+    def test_rejects_mixed_metric_types(self):
+        record = {
+            "segmentor": "mseg",
+            "treatment": "candidate",
+            "severity": "heavy",
+            "variant": "v1",
+            "sample_count": 50,
+            "mean_miou": 0.6,
+            "median_miou": 0.6,
+            "std_miou": 0.1,
+            "min_miou": 0.4,
+            "max_miou": 0.8,
+            "metric_type": "clean_reference_agreement",
+        }
+        with self.assertRaisesRegex(ValidationError, "accepts only rain_instance_agreement"):
+            insert_run(self.database, record)
+
+    def test_rejects_comparison_without_matching_severity(self):
+        record = {
+            "segmentor": "mseg",
+            "treatment": "baseline",
+            "severity": "light",
+            "variant": "v1",
+            "sample_count": 50,
+            "mean_miou": 0.7,
+            "median_miou": 0.7,
+            "std_miou": 0.1,
+            "min_miou": 0.5,
+            "max_miou": 0.9,
+        }
+        insert_run(self.database, record)
+        insert_run(self.database, {**record, "treatment": "candidate", "severity": "heavy"})
+        with self.assertRaisesRegex(ValidationError, "no matching rain severities"):
+            compare_treatments(self.database, "baseline", "candidate")
 
     def test_rejects_invalid_alert_threshold(self):
         with self.assertRaises(ValidationError):

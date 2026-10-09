@@ -4,9 +4,9 @@
 
 - Six cleaned notebooks preserving the experimental code and markdown
 - Reusable inference scripts for SegFormer, Mask2Former, and OneFormer
-- The MSeg image-level summary table
+- The MSeg aggregate rain-instance agreement table
 - Analysis figures and a small qualitative sample
-- A manifest describing the completed segmentation runs
+- A historical run manifest for three segmentors; its MSeg paths predate the later MSeg analysis and should not be treated as a final completeness check
 
 ## What is excluded
 
@@ -56,9 +56,10 @@ project-root/
 5. Run each derainer over all rain variants.
 6. Cache or install the four segmentors.
 7. Run segmentation on clean, rainy, and derained images.
-8. Compute image-level mIoU against the clean-image reference used by the study.
-9. Aggregate results by segmentor, derainer, severity, and variant.
-10. Generate the comparison figures.
+8. Compute **rain-instance agreement** by pairwise mask mIoU across the three rain realizations for the same source image, severity, and treatment.
+9. Separately compute **clean-reference agreement** by comparing each rainy or derained prediction with the same segmentor's clean-image prediction.
+10. Aggregate and label these two metrics separately by segmentor, derainer, severity, and variant; do not substitute one table for the other.
+11. Generate comparison figures. A direct rainy-image baseline and ground-truth Cityscapes evaluation are still needed to establish whether deraining improves segmentation accuracy.
 
 ## Reusable segmentation command
 

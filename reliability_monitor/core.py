@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 SEVERITIES = ("light", "medium", "heavy")
+METRIC_TYPE = "rain_instance_agreement"
 METRIC_FIELDS = (
     "mean_miou",
     "median_miou",
@@ -61,6 +62,11 @@ def normalize_run(record, source="api"):
     """Validate and normalize one run from CSV or JSON input."""
     if not isinstance(record, Mapping):
         raise ValidationError("each run must be a JSON object or CSV row")
+    metric_type = str(record.get("metric_type", METRIC_TYPE)).strip().lower()
+    if metric_type != METRIC_TYPE:
+        raise ValidationError(
+            f"this monitor accepts only {METRIC_TYPE}; other metrics need a separate schema"
+        )
     treatment_value = record.get("treatment", record.get("derainer", ""))
     normalized = {
         "segmentor": _required_text(record, "segmentor"),
@@ -185,9 +191,10 @@ def get_overview(database_path):
         ).fetchall()
 
     return {
-        "metric": "mIoU against clean-image predictions",
+        "metric_type": METRIC_TYPE,
+        "metric": "pairwise mask mIoU across rain realizations",
         "metric_scope": (
-            "Prediction consistency, not accuracy against ground-truth labels."
+            "Rain-instance agreement, not clean-reference agreement or ground-truth accuracy."
         ),
         "run_count": run_count,
         "groups": [dict(row) for row in group_rows],
@@ -218,7 +225,7 @@ def get_alerts(database_path, minimum_mean=0.70, maximum_severity_drop=0.12):
                     "observed": row["mean_miou"],
                     "threshold": minimum_mean,
                     "message": (
-                        f"{row['treatment']} falls below the consistency threshold "
+                        f"{row['treatment']} falls below the rain-instance agreement threshold "
                         f"under {row['severity']} rain."
                     ),
                 }
@@ -238,7 +245,7 @@ def get_alerts(database_path, minimum_mean=0.70, maximum_severity_drop=0.12):
                     "observed_drop": drop,
                     "threshold": maximum_severity_drop,
                     "message": (
-                        f"{treatment} drops {drop:.3f} mIoU from light to heavy rain."
+                        f"{treatment} drops {drop:.3f} rain-instance mIoU from light to heavy rain."
                     ),
                 }
             )
@@ -288,6 +295,8 @@ def compare_treatments(database_path, baseline, candidate, segmentor="mseg"):
                 "delta": candidate_mean - baseline_mean,
             }
         )
+    if not comparisons:
+        raise ValidationError("baseline and candidate have no matching rain severities")
     overall_delta = sum(row["delta"] for row in comparisons) / len(comparisons)
     return {
         "segmentor": segmentor,

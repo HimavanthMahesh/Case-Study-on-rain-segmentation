@@ -1,12 +1,14 @@
 # Results and Interpretation
 
-## What the recorded metric represents
+## Two different recorded metrics
 
-The final figures compare predictions on rainy or derained images with each segmentor's prediction on the corresponding clean image. The mIoU values therefore measure prediction consistency under image degradation and restoration.
+The **MSeg CSV and rain-instance boxplots** compare segmentation predictions across three independently rendered rain variants of the same source image, severity, and derainer. For each variant, the recorded score averages its pairwise mask mIoU with the other two variants. This is *rain-instance agreement*.
 
-This is not the same as semantic-segmentation accuracy against Cityscapes ground-truth labels. Clean predictions can contain errors, and a changed prediction is not automatically a less accurate prediction. The current results support claims about robustness and consistency, not definitive claims about ground-truth accuracy.
+The **four-segmentor per-derainer figures** instead compare predictions on derained images with each segmentor's prediction on the corresponding clean image. This is *clean-reference agreement*. The archive preserves the plots and the notebook's displayed aggregate table, but the cleaned repository does not contain a machine-readable summary table for this second metric.
 
-## MSeg summary
+Neither metric is semantic-segmentation accuracy against Cityscapes ground-truth labels. They cannot be substituted for each other. In particular, the CSV below must not be described as mIoU against clean-image predictions. See [metric definitions and provenance](METRICS.md).
+
+## MSeg rain-instance agreement summary
 
 The recorded MSeg table contains 50 image-level measurements for each derainer, severity, and rain realization. The following values average the three rain realizations within each condition:
 
@@ -28,33 +30,33 @@ python scripts/summarize_mseg_results.py
 
 ### Rain severity is the strongest consistent effect
 
-Agreement with clean predictions generally falls from light to medium to heavy rain. This pattern appears across derainers and segmentors, indicating that the result is not limited to one model combination.
+In the MSeg rain-instance table, agreement across the three rain realizations generally falls from light to medium to heavy rain across the five derainers. The separate clean-reference figures show severity-dependent differences for all four segmentors, but the CSV table above does not quantify those figures.
 
 ### Rain realization has a smaller effect
 
-Within a fixed derainer and severity, the distributions for versions `v1`, `v2`, and `v3` are usually similar. Individual outliers occur, but the condition means and medians are comparatively stable. In this sample, rain severity appears more influential than the particular random rendering.
+Within a fixed derainer and severity, the distributions for versions `v1`, `v2`, and `v3` are usually similar. Individual outliers occur, but the condition means and medians are comparatively stable. This is a descriptive observation about the recorded 50-frame sample, not a statistical significance result.
 
 ### No derainer dominates every condition
 
-IDT has the highest overall MSeg mean and the strongest light-rain mean. NeRD-Rain is strongest for MSeg under medium and heavy rain. UDR-S2Former remains competitive across severities, while Restormer and DRSformer retain less clean-prediction agreement in this recorded MSeg evaluation.
+IDT has the highest overall MSeg **rain-instance agreement** mean and the strongest light-rain mean. NeRD-Rain is strongest on that metric under medium and heavy rain. The table does not establish which model gives the best clean-reference agreement, ground-truth accuracy, or improvement over raw rainy images.
 
 These are downstream consistency results, not general-purpose deraining benchmark rankings. A restoration model optimized for perceptual or reconstruction quality may not preserve exactly the features used by a segmentation network.
 
 ### Segmentor choice changes the outcome
 
-The four-segmentor figures show different levels of sensitivity for MSeg, SegFormer, Mask2Former, and OneFormer. This supports evaluating restoration and perception as a coupled pipeline rather than selecting a derainer solely from image-quality metrics.
+The four-segmentor **clean-reference** figures show different levels of sensitivity for MSeg, SegFormer, Mask2Former, and OneFormer. This supports evaluating restoration and perception as a coupled pipeline rather than selecting a derainer solely from image-quality metrics. These figures are a separate analysis from the CSV table above.
 
 ## What can be concluded
 
 The current evidence supports the following conclusion:
 
-> Synthetic rain progressively changes semantic-segmentation predictions, and image restoration preserves clean-image behavior to different degrees depending on rain severity, derainer, and downstream segmentor. The similarity across rain realizations suggests that the main trends are systematic within the recorded sample.
+> On the recorded 50-frame synthetic-rain sample, MSeg predictions become less consistent across independently rendered rain variants as severity rises. The extent of that variation differs by derainer. Separate clean-reference plots show that the choice of segmentor also matters, but the available CSV does not quantify a gain from deraining over direct rainy-image segmentation.
 
 ## What remains unresolved
 
 The current package does not provide enough final aggregate data to establish:
 
-- whether every derainer outperforms direct segmentation on the unprocessed rainy image;
+- whether any derainer outperforms direct segmentation on the unprocessed rainy image for the same frames and segmentor;
 - whether higher agreement with clean predictions corresponds to higher accuracy against ground-truth labels;
 - whether the differences between derainers are statistically significant;
 - whether the ranking generalizes beyond 50 Aachen images;

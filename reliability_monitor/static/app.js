@@ -1,6 +1,7 @@
-const format = (value) => Number(value).toFixed(3);
+const format = (value) => Number.isFinite(value) ? value.toFixed(3) : "—";
 
 function scoreClass(value) {
+  if (!Number.isFinite(value)) return "score";
   if (value >= 0.78) return "score strong";
   if (value >= 0.70) return "score stable";
   return "score warning";
@@ -61,7 +62,7 @@ async function loadMonitor() {
     alertReport.alerts.forEach((alert) => {
       const item = document.createElement("article");
       item.className = "alert";
-      const label = alert.type === "severity_degradation" ? "Severity regression" : "Low consistency";
+      const label = alert.type === "severity_degradation" ? "Severity drop" : "Low rain-instance agreement";
       const labelElement = document.createElement("span");
       labelElement.textContent = label;
       const messageElement = document.createElement("strong");
